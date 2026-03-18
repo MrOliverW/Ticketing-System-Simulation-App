@@ -1,3 +1,13 @@
+To run:
+1) open folder in IDE 
+2) in terminal enter "npm init -y" to setup node
+3) in terminal enter "npm install express"
+4) in terminal enter "node server.js" (make sure you're in the right directory)
+5) in your web browser of choice go to : http://localhost:3000/
+6) Enjoy!
+
+YouTube: https://youtu.be/7qZMyubyWzY
+
 Ticketing System Simulation
 
 A queue system for a service center where customers take a number and wait for their turn using JS.
