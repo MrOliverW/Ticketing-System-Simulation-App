@@ -1,0 +1,64 @@
+/*
+Uses fetch api to interact with the server.js file */
+
+<!DOCTYPE //html>
+<html lang="en">
+<head>
+    <title>Ticketing System Kiosk</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 50px; background: #f4f4f9; }
+        .card { background: white; padding: 20px; border-radius: 10px; shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 5px; }
+        #status { margin-top: 20px; font-weight: bold; color: #333; }
+        .queue-list { margin-top: 20px; text-align: left; display: inline-block; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Welcome!</h1>
+        <p>Please take a number to be served.</p>
+        <button onclick="takeTicket()">Take a Ticket</button>
+        <div id="status"></div>
+        <hr>
+        <h3>Current Queue</h3>
+        <div id="queue-display" class="queue-list"></div>
+    </div>
+
+<button id="serveBtn" style="background-color: red; color: white;">Serve Next Customer</button>
+<div id="queue-list"></div>
+
+    <script>
+        async function takeTicket() {
+            const response = await fetch('/ticket', { method: 'POST' });
+            const data = await response.json();
+            document.getElementById('status').innerText = `Your Number: ${data.ticket.ticketNumber}`;
+            updateQueue();
+        }
+
+        // This connects the red button to the server logic
+document.getElementById('serveBtn').addEventListener('click', async () => {
+    const response = await fetch('/serve', { method: 'DELETE' });
+    const data = await response.json();
+
+    if (response.ok) {
+        // Show a little alert or update a status message
+        console.log(`Served: Ticket #${data.ticket.ticketNumber}`);
+        // The setInterval you already have will update the list automatically!
+    } else {
+        alert(data.message); // Tells you if the queue is empty
+    }
+});
+
+        async function updateQueue() {
+            const response = await fetch('/queue');
+            const data = await response.json();
+            const display = document.getElementById('queue-display');
+            display.innerHTML = data.tickets.map(t => `<div>Ticket #${t.ticketNumber} - ${new Date(t.timestamp).toLocaleTimeString()}</div>`).join('');
+        }
+
+        // Refresh the queue view every 3 seconds
+        setInterval(updateQueue, 3000);
+        updateQueue();
+    </script>
+</body>
+</html>
